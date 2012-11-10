@@ -23,16 +23,16 @@ if correctVersion then
 
     cli:add_option("-l, --level=NAME", "The level to display")
     cli:add_option("-c, --character=NAME", "The character to use in the game")
-    cli:add_flag("-m, --mute=CHANNEL", "Disable sound: all, music, sfx")
+    cli:add_option("-m, --mute=CHANNEL", "Disable sound: all, music, sfx")
 
     local args = cli:parse(arg)
 
-    if args["level"] then
+    if args["level"] ~= "" then
       state = args["level"]
     end
 
-    if args["character"] then
-      local character = require ( 'characters/' .. args["c"] )
+    if args["character"] ~= "" then
+      local character = require ('characters/' .. args["c"])
       local costume = love.graphics.newImage('images/characters/' .. args["c"] .. '/base.png')
       player = character.new(costume)
     end
