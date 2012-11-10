@@ -57,10 +57,7 @@ if correctVersion then
     local options = require 'options'
     options:init()
 
-    local loader = require 'loader'
-    loader:target(state,player)
-
-    Gamestate.switch(loader)
+    Gamestate.switch(require 'menu')
   end
 
   function love.update(dt)
@@ -87,8 +84,7 @@ if correctVersion then
 
     if paused then
       love.graphics.setColor(75, 75, 75, 125)
-      love.graphics.rectangle('fill', 0, 0, love.graphics:getWidth(),
-      love.graphics:getHeight())
+      love.graphics.rectangle('fill', 0, 0, love.graphics:getWidth(), love.graphics:getHeight())
       love.graphics.setColor(255, 255, 255, 255)
     end
 
