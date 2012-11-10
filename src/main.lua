@@ -11,6 +11,9 @@ local controls = require 'controls'
 local hud = require 'hud' -- this shouldn't be here
 local cli = require 'vendor.cliargs' 
 
+-- Ugly hack to get around circular import for now
+Gamestate.Level = Level
+
 if correctVersion then
 
   -- will hold the currently playing sources

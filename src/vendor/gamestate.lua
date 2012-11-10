@@ -32,6 +32,7 @@ local current = setmetatable({leave = __NULL__}, {__index = __ERROR__})
 
 local states = {}
 
+
 local GS = {}
 function GS.new()
 	return {
@@ -51,8 +52,18 @@ function GS.new()
 	}
 end
 
-function GS.load(name, state)
-    states[name] = state
+GS.Level = nil
+
+function GS.load(name)
+
+  if love.filesystem.exists("maps/" .. name .. ".lua") then
+    -- ugly hack to get around circular import
+    states[name] = GS.Level.new(name)
+  else
+    states[name] = require(name)
+  end
+
+  return states[name]
 end
 
 function GS.currentState()
@@ -61,25 +72,31 @@ end
 
 
 function GS.get(name)
-    return states[name]
+    local state = states[name]
+
+    if state then
+      return state
+    end
+    
+    return GS.load(name)
 end
 
 
 function GS.switch(to, ...)
-	assert(to, "Missing argument: Gamestate to switch to")
+  assert(to, "Missing argument: Gamestate to switch to")
 
-    if type(to) == "string" then
-        local name = to
-        to = GS.get(to)
-	    assert(to, "Failed loading gamestate " .. name)
-    end
+  if type(to) == "string" then
+    local name = to
+    to = GS.get(to)
+     assert(to, "Failed loading gamestate " .. name)
+  end
 
-	current:leave()
-	local pre = current
-	to:init()
-	to.init = __NULL__
-	current = to
-	return current:enter(pre, ...)
+  current:leave()
+  local pre = current
+  to:init()
+  to.init = __NULL__
+  current = to
+  return current:enter(pre, ...)
 end
 
 -- holds all defined love callbacks after GS.registerEvents is called
